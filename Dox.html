@@ -175,9 +175,8 @@
             border-top: 0 solid var(--border-color);
         }
 
-        /* Modified by JavaScript when extended */
         .registry-card.active .card-body {
-            max-height: 1000px; /* High threshold value for CSS animation */
+            max-height: 1000px;
             border-top-width: 1px;
         }
 
@@ -236,7 +235,6 @@
             margin-top: 4rem;
         }
 
-        /* Responsive Breakpoints */
         @media (max-width: 768px) {
             .nav-container {
                 flex-direction: column;
@@ -278,7 +276,6 @@
     </header>
 
     <div class="container">
-        
         <section id="registry" class="database-section">
             <h2>Public Database Registry</h2>
             <p class="section-subtitle">Cross-referenced verification files maintained by administrative compliance teams.</p>
@@ -287,7 +284,6 @@
                 <div class="loading-indicator">Connecting to secure database module...</div>
             </div>
         </section>
-
     </div>
 
     <footer>
@@ -299,7 +295,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Provided Web App Firebase Infrastructure Project Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCq1HUyx-pnvYvd7viR41oKwFn2fIDA078",
             authDomain: "project-get-rid-of-pedophiles.firebaseapp.com",
@@ -309,16 +304,13 @@
             appId: "1:539536281063:web:500cfbcf2b34ccdc6b4142"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Reference target node and process records async
         const registryList = document.getElementById('registryList');
 
         async function fetchAndRenderRegistry() {
             try {
-                // Fetch dynamic query from specified Firestore collection
                 const querySnapshot = await getDocs(collection(db, "offenders"));
                 
                 if (querySnapshot.empty) {
@@ -326,20 +318,17 @@
                     return;
                 }
 
-                // Clear layout placeholder element
                 registryList.innerHTML = '';
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     
-                    // Fallback assignments to prevent breaking interface elements on null fields
                     const name = data.name || "Unknown Identity";
                     const age = data.age || "N/A";
                     const reason = data.reason || "Under Investigation";
                     const description = data.description || "No extended profile description provided.";
                     const photoUrl = data.photoUrl || "https://via.placeholder.com/150x180?text=No+Photo+Available";
 
-                    // Construct component template markup safely
                     const card = document.createElement('div');
                     card.className = 'registry-card';
                     card.innerHTML = `
@@ -353,14 +342,13 @@
                             <div class="card-inner-content">
                                 <img src="${photoUrl}" alt="Record Photo: ${name}" class="offender-image" onerror="this.src='https://via.placeholder.com/150x180?text=Error+Loading'">
                                 <div class="details-text">
-                                    <h4>Case Case File Overview & Verified Description</h4>
+                                    <h4>Case File Overview & Verified Description</h4>
                                     <p>${description}</p>
                                 </div>
                             </div>
                         </div>
                     `;
 
-                    // Accordion click animation engine assignment
                     const header = card.querySelector('.card-header');
                     header.addEventListener('click', () => {
                         card.classList.toggle('active');
@@ -370,12 +358,11 @@
                 });
 
             } catch (error) {
-                console.error("Error communicating with Firestore instance: ", error);
-                registryList.innerHTML = '<div class="empty-indicator" style="color: var(--secondary-color);">Database initialization failure. Verify network request permissions.</div>';
+                console.error("Firestore Error Details:", error);
+                registryList.innerHTML = `<div class="empty-indicator" style="color: var(--secondary-color);">Database connection error: ${error.message}</div>`;
             }
         }
 
-        // Run fetch sequence on layout load configuration
         window.addEventListener('DOMContentLoaded', fetchAndRenderRegistry);
     </script>
 </body>
